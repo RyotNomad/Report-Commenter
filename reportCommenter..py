@@ -1,12 +1,16 @@
 import os
 import shutil
 import sys
+import errno
 from docx import Document
 
 
 
 def get_remark(mark):
+
     mark = int(mark)
+    if(mark) > 80:
+        return "Outstanding Achievement"
     if(mark) > 70:
         return "Meritorious Achievement"
     if(mark>60):
@@ -18,7 +22,7 @@ def get_remark(mark):
     if(mark>30):
         return "Elementary Achievement"
     else:
-        return "Hella dom or hella smart"
+        return "Not Achieved"
 
 backup_name = "Report_backups"
 backup_name_dir = "/Report_backups"
@@ -27,10 +31,12 @@ backup_name_dir = "/Report_backups"
 try:
     os.mkdir(backup_name)
     print("Backup successfully made")
+    sys.exit()
 
-except FileExistsError:
-    print("Error it seems like the backup has already been made, please contact Farhaan")
-    #sys.exit()
+except OSError as e:
+    if e.errno == errno.EEXIST:
+        print('Backup already exists. Contact Farhaan')
+
 
 files = [f for f in os.listdir('.') if os.path.isfile(f)]
 
@@ -42,15 +48,20 @@ for f in files:
 
 #Open files
 
-for f in files[1:len(files)-2]:
-    doc = Document(f)
-    for table in doc.tables:
-        for i in range(0,4):
-            mark = table.cell(i, 0)
-            comment = table.cell(i, 1)
-            remark = get_remark(mark.text)
-            table.cell(i,1).text = remark
-        doc.save(f)
+for f in files:
+    if f == "trt.docx":
+        print("working...")
+        doc = Document(f)
+        for table in doc.tables:
+            for i in range(1 ,len(table.rows)):
+                mark = table.cell(i,2)
+
+                comment = table.cell(i, 3)
+                remark = get_remark(mark.text)
+                table.cell(i,3).text = remark
+            doc.save(f)
+print("Saving...")
+
 
 
 
