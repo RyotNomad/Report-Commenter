@@ -1,6 +1,6 @@
 # Report-Commenter
 
-Small script I wrote for a Homeschooling that manually creates all reports in MS Word. 
+Small script I wrote for a homeschooling that manually creates all reports in MS Word. 
 
 Teachers will fill in the mark and save the reports in a folder.
 
